@@ -11,8 +11,8 @@ use SpitsOnline\WeFact\Concerns\SerializesWithoutClient;
 use SpitsOnline\WeFact\WeFact;
 
 /**
- * A debtor ("debiteur"): a customer. It knows its id, so it can update
- * itself: `$debtor->update(comment: '…')`.
+ * A debtor ("debiteur"): a customer. It knows its id, so it can act on itself:
+ * `$debtor->update(comment: '…')` and `$debtor->bill($line)`.
  *
  * `WeFact::debtors()->get()` returns the API's short version of each debtor, with
  * the code, names, email address and modification date; the other fields are null

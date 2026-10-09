@@ -73,14 +73,14 @@ like Eloquent: pick a record, then act on it. Lists return typed data objects.
 ```php
 // v1
 foreach ((new Debtor)->list() as $row) { $row['Identifier']; }
-$debtor = new Debtor($id);
+$debtor = new Debtor($debtorId);
 $debtor->Comment = 'Pays late';
 $debtor->save();
 
 // v2
 foreach (WeFact::debtors()->get() as $debtor) { $debtor->id; }
-$debtor = WeFact::debtor($id)->get();
-WeFact::debtor($id)->update(comment: 'Pays late');
+$debtor = WeFact::debtor($debtorId)->get();
+WeFact::debtor($debtorId)->update(comment: 'Pays late');
 ```
 
 | v1 | v2 |
@@ -97,15 +97,14 @@ WeFact::debtor($id)->update(comment: 'Pays late');
 
 ```php
 // v1
-$quote = new Quote($id);
+$quote = new Quote($quoteId);
 $quote->addQuoteLine([$line]);
 $quote->removeQuoteLine($previousLines);
 $quote->accept();
 
-// v2
-$quote = WeFact::quote($id)->get();
-$quote->lines()->add(Line::create('Website', priceExcl: 1250));
-$quote->lines()->remove(...$quote->lines);
+// v2: adds the new lines, then removes the previous ones
+$quote = WeFact::quote($quoteId);
+$quote->lines()->replace(Line::create('Website', priceExcl: 1250));
 $quote->accept();
 ```
 
@@ -216,7 +215,8 @@ $fake = WeFact::fake()
     ->withDebtor(['CompanyName' => 'Acme'])
     ->withQuote(['Debtor' => 1]);
 
-// … run the code under test …
+// The code under test; usually an action of your app.
+WeFact::quote(1)->accept();
 
 $fake->assertQuoteAccepted(1);
 ```

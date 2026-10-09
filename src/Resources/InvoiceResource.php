@@ -9,8 +9,9 @@ use SpitsOnline\WeFact\Exceptions\NotFound;
 use SpitsOnline\WeFact\WeFact;
 
 /**
- * One invoice: `WeFact::invoice($id)`. Picking an invoice sends no request; every
- * method after it sends exactly one. An `Invoice` you fetched has the same methods.
+ * One invoice: `WeFact::invoice($id)`. Picking an invoice sends no request, and
+ * neither does `lines()`; `get()` and `delete()` send one each. An `Invoice` you
+ * fetched has the same methods.
  */
 class InvoiceResource
 {

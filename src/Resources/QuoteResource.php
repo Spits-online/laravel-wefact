@@ -16,8 +16,9 @@ use SpitsOnline\WeFact\Exceptions\RequestFailed;
 use SpitsOnline\WeFact\WeFact;
 
 /**
- * One quote: `WeFact::quote($id)`. Picking a quote sends no request; every method
- * after it sends exactly one. A `Quote` you fetched has the same methods.
+ * One quote: `WeFact::quote($id)`. Picking a quote sends no request, and neither
+ * does `lines()`; every other method sends one. A `Quote` you fetched has the same
+ * methods.
  */
 class QuoteResource
 {

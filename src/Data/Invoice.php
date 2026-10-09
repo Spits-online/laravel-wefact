@@ -16,7 +16,7 @@ use SpitsOnline\WeFact\WeFact;
  * An invoice. It knows its id, so it can act on itself: `$invoice->lines()->add($line)`
  * and `$invoice->delete()`, the same as `WeFact::invoice($id)`.
  *
- * A draft invoice has a code like `[concept]0009` until it is sent. `WeFact::invoices()->get()`
+ * A concept invoice has a code like `[concept]0009` until it is sent. `WeFact::invoices()->get()`
  * doesn't return lines: `$lines` is null there, and a list when the invoice came from
  * `find()` or `get()`. `$raw` holds the full payload.
  */

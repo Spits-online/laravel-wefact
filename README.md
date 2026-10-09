@@ -137,7 +137,9 @@ address and modification date. `find()` returns every field. Fields the package
 doesn't model are in `$debtor->raw`, in the API's own keys:
 
 ```php
-$debtor->raw['InvoiceAddress'];
+$debtor = WeFact::debtors()->find(12);
+
+$debtor?->raw['Sex'];
 ```
 
 ### Creating and changing debtors
@@ -226,6 +228,8 @@ by its code. Archived quotes don't appear in lists.
 ### Changing quotes and their lines
 
 ```php
+use SpitsOnline\WeFact\Enums\QuoteStatus;
+
 $quote = WeFact::quote(51)->update(
     referenceNumber: 'Website 2026, v2',
     status: QuoteStatus::SENT,
@@ -313,7 +317,6 @@ invoice, and takes the same `referenceNumber`, `date`, `description` and
 
 ```php
 $invoice = WeFact::invoice(18)->get();
-$invoice = WeFact::invoices()->findByCode('F2026-0001');
 
 $invoice->status;     // InvoiceStatus::SENT
 $invoice->amountIncl;
@@ -322,10 +325,15 @@ $invoice->payBefore;
 
 $invoice->lines()->remove($invoice->lines[0]);
 
-WeFact::invoice(18)->delete();
+$invoice = WeFact::invoices()->findByCode('F2026-0001');
+
+// Only concept invoices can be deleted.
+WeFact::invoice(19)->delete();
 ```
 
-Only concept invoices can be deleted. Invoice lines work like quote lines,
+`findByCode()` returns null when there is no invoice with that code; an invoice
+that hasn't been sent has a code like `[concept]0009`. Only concept invoices can
+be deleted. Invoice lines work like quote lines,
 `replace()` included: the API keeps at least one line on an invoice. Invoices
 from `get()` have no lines.
 
@@ -454,14 +462,16 @@ unblocked.
 that's your driver). Seed it in the API's own keys, then assert on what changed:
 
 ```php
+use SpitsOnline\WeFact\Data\Line;
 use SpitsOnline\WeFact\Facades\WeFact;
 
-it('bills the hours to the draft invoice', function () {
+it('bills the hours to the concept invoice', function () {
     $fake = WeFact::fake()
         ->withDebtor(['CompanyName' => 'Acme'])
         ->withInvoice(['Debtor' => 1]);
 
-    // … run the code under test …
+    // The code under test; usually an action of your app.
+    WeFact::debtor(1)->bill(Line::create('Programming', quantity: 1.5));
 
     $fake->assertInvoiceLinesAdded(
         1,
