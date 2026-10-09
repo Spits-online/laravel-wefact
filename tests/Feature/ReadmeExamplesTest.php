@@ -30,6 +30,26 @@ it('runs the pitch', function () {
     );
 
     expect($quote->accept(createInvoice: true)->status)->toBe(QuoteStatus::INVOICED);
+
+    $invoice = WeFact::debtor(12)->bill(Line::create('Support', priceExcl: 95, quantity: 1.5));
+
+    expect($invoice->lines)->toHaveCount(2);
+});
+
+it('runs the billing and replace examples', function () {
+    $invoice = WeFact::debtor(12)->bill(
+        Line::create('Programming', priceExcl: 95, quantity: 1.5),
+        Line::create('Travel', priceExcl: 0.23, quantity: 42),
+    );
+
+    WeFact::quote(51)->lines()->replace(
+        Line::create('Website redesign', priceExcl: 4500),
+        Line::create('Hosting', priceExcl: 15),
+    );
+
+    expect($invoice->amountExcl)->toBe(152.16)
+        ->and(WeFact::quote(51)->get()->lines)->toHaveCount(2)
+        ->and(WeFact::debtors()->find(12)?->invoiceAddress)->toBeNull();
 });
 
 it('runs the debtor examples', function () {

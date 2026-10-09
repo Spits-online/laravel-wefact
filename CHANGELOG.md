@@ -24,7 +24,10 @@ an app has to make.
 - Filters on lists: status (one or several), debtor and `modifiedSince`.
 - `Line::create()` for quote and invoice lines. It writes amounts without a
   thousands separator and dates in the API's timezone.
-- Quote and invoice lines: `->lines()->add()` and `->lines()->remove()`.
+- Quote and invoice lines: `->lines()->add()`, `->lines()->remove()` and
+  `->lines()->replace()`, which adds the new lines before it removes the old ones.
+- `WeFact::debtor($id)->bill(...$lines)`: puts lines on the debtor's concept
+  invoice, or on a new one when it has none.
 - `WeFact::quote($id)->accept(createInvoice: true)`, `->decline()` and
   `->archive()`, and `WeFact::invoice($id)->delete()`.
 - `find()` and `findByCode()`, which return null for a record that doesn't exist.

@@ -51,4 +51,18 @@ class InvoiceLines
             'InvoiceLines' => Arr::map($lines, fn (LineItem|int $line) => ['Identifier' => $line instanceof LineItem ? $line->id : $line]),
         ]);
     }
+
+    /**
+     * Replace every line of the invoice with these, in three requests: the current lines
+     * are read, the new ones added, and then the old ones removed. Adding first keeps
+     * the invoice intact when the API refuses a new line, and respects the API's rule that
+     * a invoice keeps at least one line, which is also why this takes at least one.
+     */
+    public function replace(Line $line, Line ...$lines): void
+    {
+        $previous = $this->weFact->invoice($this->invoice)->get()->lines ?? [];
+
+        $this->add($line, ...$lines);
+        $this->remove(...$previous);
+    }
 }

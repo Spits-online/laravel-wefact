@@ -88,7 +88,8 @@ WeFact::debtor($id)->update(comment: 'Pays late');
 | `(new Debtor)->list()` (at most 1,000) | `WeFact::debtors()->get()` (every page, lazily) |
 | `new Debtor($id)` | `WeFact::debtor($id)->get()`, or `WeFact::debtors()->find($id)` for null when missing |
 | `$debtor->DebtorCode`, `->CompanyName`, … | `$debtor->code`, `->companyName`, … (see `Debtor`) |
-| Fields v2 doesn't model, e.g. `InvoiceAddress` | `$debtor->raw['InvoiceAddress']` |
+| `$debtor->InvoiceAddress` | `$debtor->invoiceAddress` |
+| Fields v2 doesn't model, e.g. `LegalForm` | `$debtor->raw['LegalForm']` |
 | `$debtor->Comment = …; $debtor->save()` | `$debtor->update(comment: …)` |
 | `(new Debtor)->create([...])` | `WeFact::debtors()->create(companyName: …)` |
 
@@ -117,6 +118,7 @@ $quote->accept();
 | `$quote->set([...]); $quote->save()` | `$quote->update(referenceNumber: …, date: …, status: …)` |
 | `$quote->addQuoteLine([$line])` | `$quote->lines()->add(Line::create(…))` (one request for every line) |
 | `$quote->removeQuoteLine([['Identifier' => 1]])` | `$quote->lines()->remove(1)` or `->remove($lineItem)` |
+| Add the new lines, then remove the previous ones | `$quote->lines()->replace(...$lines)` |
 | `$quote->accept()` / `->decline()` | `$quote->accept()` / `->decline()`, which return the updated `Quote` |
 | `(int) $quote->Status` | `$quote->status` (`QuoteStatus`) |
 
@@ -140,12 +142,8 @@ $invoice = (new Invoice)->find($drafts[0]['Identifier']);
 $invoice->InvoiceLines = $lines;
 $invoice->save();
 
-// v2
-$draft = WeFact::invoices()
-    ->get(status: InvoiceStatus::CONCEPT, debtor: $debtorId)
-    ->first();
-
-$draft?->lines()->add(Line::create(
+// v2: on the debtor's concept invoice, or a new one when it has none
+WeFact::debtor($debtorId)->bill(Line::create(
     description: 'Programming',
     priceExcl: 95,
     quantity: 1.5,
@@ -157,6 +155,7 @@ $draft?->lines()->add(Line::create(
 | `list(['status' => '0', 'searchat' => 'Debtor', 'searchfor' => $id])` | `WeFact::invoices()->get(status: InvoiceStatus::CONCEPT, debtor: $id)` |
 | `(new Invoice)->create(['DebtorCode' => …, 'InvoiceLines' => […]])` | `WeFact::invoices()->create(debtor: $id, lines: [Line::create(…)])` |
 | `$invoice->InvoiceLines = $lines; $invoice->save()` | `$invoice->lines()->add(...$lines)` |
+| The find-a-concept-invoice-or-create-one dance | `WeFact::debtor($id)->bill(...$lines)` |
 | `['DiscountPercentage' => 100]` on a line | `Line::create(…, discountPercentage: 100)` |
 | `'PriceExcl' => number_format($x, 2, '.', ',')` | `Line::create(…, priceExcl: $x)`, a float |
 | `'Date' => $carbon` | `Line::create(…, date: $carbon)` |

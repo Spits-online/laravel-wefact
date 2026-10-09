@@ -24,6 +24,7 @@ final readonly class Debtor
     use SerializesWithoutClient;
 
     /**
+     * @param  ?string  $invoiceAddress  the street of the billing address, when it differs from `$address`
      * @param  ?string  $initials  the API's "Initials" field, which usually holds the first name
      * @param  array<array-key, mixed>  $raw
      */
@@ -40,6 +41,7 @@ final readonly class Debtor
         public ?string $zipCode,
         public ?string $city,
         public ?string $country,
+        public ?string $invoiceAddress,
         public ?string $companyNumber,
         public ?string $taxNumber,
         public ?string $comment,
@@ -71,6 +73,7 @@ final readonly class Debtor
             zipCode: self::text($data, 'ZipCode'),
             city: self::text($data, 'City'),
             country: self::text($data, 'Country'),
+            invoiceAddress: self::text($data, 'InvoiceAddress'),
             companyNumber: self::text($data, 'CompanyNumber'),
             taxNumber: self::text($data, 'TaxNumber'),
             comment: self::text($data, 'Comment'),
@@ -107,5 +110,13 @@ final readonly class Debtor
             $companyName, $initials, $surName, $emailAddress, $phoneNumber, $mobileNumber,
             $address, $zipCode, $city, $country, $companyNumber, $taxNumber, $comment, $attributes,
         );
+    }
+
+    /**
+     * Put lines on the debtor's concept invoice. See `DebtorResource::bill()`.
+     */
+    public function bill(Line $line, Line ...$lines): Invoice
+    {
+        return $this->weFact->debtor($this->id)->bill($line, ...$lines);
     }
 }

@@ -37,6 +37,10 @@ $quote = WeFact::quotes()->create(
 );
 
 $quote->accept(createInvoice: true);
+
+WeFact::debtor(12)->bill(
+    Line::create('Support', priceExcl: 95, quantity: 1.5),
+);
 ```
 
 ## Requirements
@@ -105,6 +109,7 @@ $debtor = WeFact::debtors()->find(12);
 
 $debtor?->companyName;
 $debtor?->emailAddress;
+$debtor?->invoiceAddress;
 ```
 
 `find()` and `findByCode()` return null when the debtor doesn't exist.
@@ -236,8 +241,18 @@ $quote->lines()->remove($quote->lines[0]);
 
 `add()` and `remove()` send one request for all their lines. `remove()` takes
 the `LineItem`s from `$quote->lines`, or their ids. The API keeps at least one
-line on a quote, so to replace every line, add the new ones first and remove the
-old ones after.
+line on a quote, so `remove()` can't take them all.
+
+To swap every line for new ones, use `replace()`. It adds the new lines before
+it removes the old ones, so a refused line never leaves the quote half-edited,
+and it takes at least one line:
+
+```php
+WeFact::quote(51)->lines()->replace(
+    Line::create('Website redesign', priceExcl: 4500),
+    Line::create('Hosting', priceExcl: 15),
+);
+```
 
 ### Accepting, declining and archiving quotes
 
@@ -259,22 +274,35 @@ quote's status is `QuoteStatus::INVOICED`; `$quote->status?->isAccepted()` is
 true for both. An archived quote no longer appears in `WeFact::quotes()->get()`;
 on WeFact, only accepted, invoiced and declined quotes can be archived.
 
-### Adding lines to an invoice
+### Billing work to a debtor
+
+`bill()` puts lines on the debtor's concept invoice, to be sent later: its
+newest concept invoice when it has one, or a new one. It returns that invoice.
+
+```php
+$invoice = WeFact::debtor(12)->bill(
+    Line::create('Programming', priceExcl: 95, quantity: 1.5),
+    Line::create('Travel', priceExcl: 0.23, quantity: 42),
+);
+```
+
+A concept invoice can also come from accepting a quote with `createInvoice`, so
+the lines may land on that one.
+
+### Creating invoices
 
 ```php
 use SpitsOnline\WeFact\Enums\InvoiceStatus;
 
-$line = Line::create('Programming', priceExcl: 95, quantity: 1.5);
+$invoice = WeFact::invoices()->create(
+    debtor: 12,
+    lines: [Line::create('Website redesign', priceExcl: 4500)],
+);
 
-$draft = WeFact::invoices()
-    ->get(status: InvoiceStatus::CONCEPT, debtor: 12)
-    ->first();
-
-if ($draft) {
-    $draft->lines()->add($line);
-} else {
-    WeFact::invoices()->create(debtor: 12, lines: [$line]);
-}
+$concepts = WeFact::invoices()->get(
+    status: InvoiceStatus::CONCEPT,
+    debtor: 12,
+);
 ```
 
 Filtering on `debtor` matches the debtor's id exactly. `create()` makes a concept
@@ -297,8 +325,9 @@ $invoice->lines()->remove($invoice->lines[0]);
 WeFact::invoice(18)->delete();
 ```
 
-Only concept invoices can be deleted. As on quotes, the API keeps at least one
-line on an invoice, and invoices from `get()` have no lines.
+Only concept invoices can be deleted. Invoice lines work like quote lines,
+`replace()` included: the API keeps at least one line on an invoice. Invoices
+from `get()` have no lines.
 
 ### Products
 
