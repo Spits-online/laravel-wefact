@@ -58,19 +58,17 @@ composer require spits-online/laravel-wefact
 Add the driver and your API key to `.env`:
 
 ```env
-# wefact (the default) or hostfact
 WEFACT_DRIVER=hostfact
-# HostFact only: the apiv2/api.php of your installation
 WEFACT_URL=https://administratie.example.com/apiv2/api.php
 WEFACT_KEY=your-api-key
-
-# Optional
 WEFACT_TIMEOUT=10
 WEFACT_TIMEZONE=Europe/Amsterdam
 ```
 
-Where to find each value:
+`WEFACT_TIMEOUT` (in seconds) and `WEFACT_TIMEZONE` are optional. Where to find
+each value:
 
+- **`WEFACT_DRIVER`:** `wefact` (the default) or `hostfact`.
 - **`WEFACT_KEY`:** the "beveiligingscode" under Instellingen → API in WeFact,
   or Instellingen → HostFact voorkeuren → API in HostFact.
 - **The IP whitelist** is on the same page. Add the IP address of every server
@@ -165,14 +163,19 @@ Quote and invoice lines are built with `Line::create()`:
 use SpitsOnline\WeFact\Data\Line;
 
 Line::create('Programming', priceExcl: 95, quantity: 1.5, unit: 'hour');
+```
 
-// The product's description and price, from the API.
+A product code takes the product's description and price from the API:
+
+```php
 Line::create(productCode: 'P001', quantity: 12);
+```
 
-// A line that is shown but not charged.
+A 100% discount makes a line that is shown but not charged, and a description
+alone makes a text line:
+
+```php
 Line::create('Travel', priceExcl: 0.23, quantity: 42, discountPercentage: 100);
-
-// A text line.
 Line::create('Prices exclude VAT.');
 ```
 
@@ -262,14 +265,14 @@ WeFact::quote(51)->lines()->replace(
 
 ```php
 $quote = WeFact::quote(51)->accept();
-
-// Also turns the quote into a concept invoice.
 $quote = WeFact::quote(51)->accept(createInvoice: true);
 
 $quote = WeFact::quote(51)->decline();
 
 WeFact::quote(51)->archive();
 ```
+
+`accept(createInvoice: true)` also turns the quote into a concept invoice.
 
 `accept()` throws `RequestFailed` when the quote can't be accepted, such as a
 declined quote: the API answers success there, but leaves the quote declined. An
@@ -326,8 +329,6 @@ $invoice->payBefore;
 $invoice->lines()->remove($invoice->lines[0]);
 
 $invoice = WeFact::invoices()->findByCode('F2026-0001');
-
-// Only concept invoices can be deleted.
 WeFact::invoice(19)->delete();
 ```
 
@@ -441,15 +442,17 @@ use SpitsOnline\WeFact\Exceptions\WeFactException;
 try {
     WeFact::quote(51)->accept();
 } catch (AccessDenied $e) {
-    // A setup problem, not a missing quote.
     report($e);
 } catch (RequestFailed $e) {
-    // The API's own error messages, e.g. why it refused.
-    $e->errors;
+    return back()->withErrors($e->errors);
 } catch (WeFactException $e) {
-    // The API couldn't be reached.
+    report($e);
 }
 ```
+
+`AccessDenied` is a setup problem, not a missing quote. `RequestFailed` holds
+the API's own error messages in `$errors`, such as why it refused. Catching
+`WeFactException` covers everything else, such as an API that can't be reached.
 
 The API answers errors with HTTP 200, so the package reads them from the
 answer itself. WeFact limits each IP address to 200 calls a minute and 3,600 an
@@ -470,7 +473,6 @@ it('bills the hours to the concept invoice', function () {
         ->withDebtor(['CompanyName' => 'Acme'])
         ->withInvoice(['Debtor' => 1]);
 
-    // The code under test; usually an action of your app.
     WeFact::debtor(1)->bill(Line::create('Programming', quantity: 1.5));
 
     $fake->assertInvoiceLinesAdded(
@@ -480,7 +482,8 @@ it('bills the hours to the concept invoice', function () {
 });
 ```
 
-The fake answers the same requests the real client sends, so it behaves like
+The `bill()` call stands in for the code under test, usually an action of your
+app. The fake answers the same requests the real client sends, so it behaves like
 the API: lists filter and page, a missing record throws `NotFound`, a declined
 quote can't be accepted, only concept invoices can be deleted, a quote or invoice
 keeps at least one line, and `accept(createInvoice: true)` creates a concept
