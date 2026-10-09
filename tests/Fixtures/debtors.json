@@ -1,0 +1,34 @@
+{
+    "controller": "debtor",
+    "action": "list",
+    "status": "success",
+    "date": "2026-10-09T12:39:11+02:00",
+    "totalresults": 13,
+    "currentresults": 2,
+    "offset": 0,
+    "filters": {
+        "limit": "2"
+    },
+    "debtors": [
+        {
+            "Identifier": "2",
+            "DebtorCode": "DB10001",
+            "CompanyName": "Tandem",
+            "Sex": "m",
+            "Initials": "Paul",
+            "SurName": "Vissers",
+            "EmailAddress": "info@example.com",
+            "Modified": "2026-07-23 11:36:43"
+        },
+        {
+            "Identifier": "4",
+            "DebtorCode": "DB10003",
+            "CompanyName": "De Groot Stoffen",
+            "Sex": "f",
+            "Initials": "Charlotte",
+            "SurName": "de Groot",
+            "EmailAddress": "info@example.com",
+            "Modified": "2026-04-09 10:33:16"
+        }
+    ]
+}

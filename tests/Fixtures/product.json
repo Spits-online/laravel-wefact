@@ -1,0 +1,32 @@
+{
+    "controller": "product",
+    "action": "show",
+    "status": "success",
+    "date": "2026-10-09T12:39:12+02:00",
+    "product": {
+        "Identifier": "5",
+        "ProductCode": "P005",
+        "ProductName": "SEO Maandelijkse Onderhoud",
+        "ProductKeyPhrase": "SEO Maandelijkse Onderhoud",
+        "ProductDescription": "",
+        "NumberSuffix": "month",
+        "PriceExcl": "500",
+        "PricePeriod": "m",
+        "TaxPercentage": 21,
+        "Cost": "0",
+        "ProductType": "other",
+        "ProductSubType": "0",
+        "ProductTld": "",
+        "PackageID": "0",
+        "HasCustomPrice": "no",
+        "CustomPrices": [],
+        "Groups": [],
+        "Custom": [],
+        "Created": "2026-04-09 11:12:17",
+        "Modified": "2026-09-28 09:47:17",
+        "Translations": {
+            "ProductType": "Algemeen",
+            "PricePeriod": "maand"
+        }
+    }
+}

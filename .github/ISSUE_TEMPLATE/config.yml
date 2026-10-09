@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question or propose a feature
+    url: https://github.com/Spits-online/laravel-wefact/discussions/new
+    about: Questions and ideas go in Discussions, so issues stay a list of real bugs.
+  - name: Report a security vulnerability
+    url: https://github.com/Spits-online/laravel-wefact/security/policy
+    about: Please don't report security issues publicly.
