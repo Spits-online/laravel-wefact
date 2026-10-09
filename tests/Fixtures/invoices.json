@@ -1,0 +1,48 @@
+{
+    "controller": "invoice",
+    "action": "list",
+    "status": "success",
+    "date": "2026-10-09T12:39:12+02:00",
+    "totalresults": 7,
+    "currentresults": 2,
+    "offset": 0,
+    "filters": {
+        "limit": "2"
+    },
+    "invoices": [
+        {
+            "Identifier": "15",
+            "InvoiceCode": "[concept]0008",
+            "Debtor": "2",
+            "DebtorCode": "DB10001",
+            "CompanyName": "Tandem",
+            "Initials": "Paul",
+            "SurName": "Vissers",
+            "AmountExcl": "0.00",
+            "AmountIncl": "0.00",
+            "AmountOpen": 0,
+            "Date": "2026-07-11",
+            "Status": "0",
+            "SubStatus": "",
+            "Authorisation": "no",
+            "Modified": "2026-10-09 12:03:24"
+        },
+        {
+            "Identifier": "14",
+            "InvoiceCode": "[concept]0007",
+            "Debtor": "6",
+            "DebtorCode": "DB10005",
+            "CompanyName": "Tuinspecialist.nl B.V.",
+            "Initials": "Patrick",
+            "SurName": "van Hoek",
+            "AmountExcl": "525.00",
+            "AmountIncl": "635.25",
+            "AmountOpen": 0,
+            "Date": "2026-04-09",
+            "Status": "0",
+            "SubStatus": "",
+            "Authorisation": "no",
+            "Modified": "2026-04-14 09:54:04"
+        }
+    ]
+}

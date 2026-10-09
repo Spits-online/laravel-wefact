@@ -1,0 +1,44 @@
+{
+    "controller": "product",
+    "action": "list",
+    "status": "success",
+    "date": "2026-10-09T12:39:12+02:00",
+    "totalresults": 8,
+    "currentresults": 2,
+    "offset": 0,
+    "filters": {
+        "limit": "2"
+    },
+    "products": [
+        {
+            "Identifier": "1",
+            "ProductCode": "P001",
+            "ProductName": "Laravel development",
+            "ProductKeyPhrase": "Laravel development",
+            "ProductDescription": "",
+            "ProductType": "other",
+            "ProductTld": "",
+            "PackageID": "",
+            "NumberSuffix": "hour(s)",
+            "PriceExcl": "25",
+            "TaxPercentage": 21,
+            "PricePeriod": "",
+            "Modified": "2026-04-09 10:58:27"
+        },
+        {
+            "Identifier": "2",
+            "ProductCode": "P002",
+            "ProductName": "Graphic design",
+            "ProductKeyPhrase": "Graphic design",
+            "ProductDescription": "",
+            "ProductType": "other",
+            "ProductTld": "",
+            "PackageID": "",
+            "NumberSuffix": "hour(s)",
+            "PriceExcl": "25",
+            "TaxPercentage": 21,
+            "PricePeriod": "",
+            "Modified": "2023-05-05 14:42:39"
+        }
+    ]
+}
