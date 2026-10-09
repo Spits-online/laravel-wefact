@@ -12,7 +12,7 @@
     </picture>
   </a>
 
-<h1>Work with WeFact and HostFact debtors, quotes, invoices, products and subscriptions in Laravel</h1>
+<h1>Work with WeFact and HostFact in Laravel</h1>
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spits-online/laravel-wefact.svg?style=flat-square)](https://packagist.org/packages/spits-online/laravel-wefact)
 [![Tests](https://img.shields.io/github/actions/workflow/status/Spits-online/laravel-wefact/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/Spits-online/laravel-wefact/actions/workflows/run-tests.yml)

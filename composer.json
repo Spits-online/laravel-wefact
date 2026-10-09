@@ -1,6 +1,6 @@
 {
     "name": "spits-online/laravel-wefact",
-    "description": "Work with WeFact and HostFact debtors, quotes, invoices, products and subscriptions in Laravel",
+    "description": "Work with WeFact and HostFact in Laravel",
     "keywords": [
         "spits",
         "laravel",
